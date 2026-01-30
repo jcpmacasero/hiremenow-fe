@@ -1,13 +1,27 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore } from './stores/auth';
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/Login';
-import AdminLayout from './layouts/AdminLayout';
-import DashboardPage from './pages/admin/DashboardPage';
-import CompaniesPage from './pages/admin/CompaniesPage';
-import EmployersPage from './pages/admin/EmployersPage';
-import CandidatesPage from './pages/admin/CandidatesPage';
-import JobsPage from './pages/admin/JobsPage';
+import { useAuthStore } from '@/stores/auth';
+import LandingPage from '@/pages/LandingPage';
+import LoginPage from '@/pages/Login';
+import LeadCapturePage from '@/pages/LeadCapture';
+import AdminLayout from '@/layouts/AdminLayout';
+import CandidateLayout from '@/layouts/CandidateLayout';
+import EmployerLayout from '@/layouts/EmployerLayout';
+import DashboardPage from '@/pages/admin/DashboardPage';
+import CompaniesPage from '@/pages/admin/CompaniesPage';
+import EmployersPage from '@/pages/admin/EmployersPage';
+import CandidatesPage from '@/pages/admin/CandidatesPage';
+import JobsPage from '@/pages/admin/JobsPage';
+import CandidateDashboardPage from '@/pages/candidate/CandidateDashboardPage';
+import CandidateProfilePage from '@/pages/candidate/CandidateProfilePage';
+import CandidateProgressPage from '@/pages/candidate/CandidateProgressPage';
+import CandidateDocumentsPage from '@/pages/candidate/CandidateDocumentsPage';
+import CandidateJobsPage from '@/pages/candidate/CandidateJobsPage';
+import EmployerDashboardPage from '@/pages/employer/EmployerDashboardPage';
+import EmployerCompanyPage from '@/pages/employer/EmployerCompanyPage';
+import EmployerJobsPage from '@/pages/employer/EmployerJobsPage';
+import EmployerJobNewPage from '@/pages/employer/EmployerJobNewPage';
+import EmployerJobDetailPage from '@/pages/employer/EmployerJobDetailPage';
+import EmployerJobEditPage from '@/pages/employer/EmployerJobEditPage';
 
 // Auth guard component
 function RequireAuth({ allowedRoles }: { allowedRoles: string[] }) {
@@ -37,9 +51,9 @@ function RequireAuth({ allowedRoles }: { allowedRoles: string[] }) {
   return <Outlet />;
 }
 
-// Public route wrapper (redirect to admin if authenticated)
+// Public route wrapper (redirect by role if authenticated)
 function PublicRoute() {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
 
   if (isLoading) {
     return (
@@ -54,7 +68,10 @@ function PublicRoute() {
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user) {
+    const role = user.role;
+    if (role === 'candidate') return <Navigate to="/candidate/dashboard" replace />;
+    if (role === 'employer') return <Navigate to="/employer/dashboard" replace />;
     return <Navigate to="/admin" replace />;
   }
 
@@ -73,6 +90,45 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <LoginPage />,
+      },
+    ],
+  },
+  {
+    path: '/register',
+    element: <LeadCapturePage />,
+  },
+  {
+    path: '/candidate',
+    element: <RequireAuth allowedRoles={['candidate']} />,
+    children: [
+      {
+        element: <CandidateLayout />,
+        children: [
+          { index: true, element: <Navigate to="dashboard" replace /> },
+          { path: 'dashboard', element: <CandidateDashboardPage /> },
+          { path: 'profile', element: <CandidateProfilePage /> },
+          { path: 'progress', element: <CandidateProgressPage /> },
+          { path: 'documents', element: <CandidateDocumentsPage /> },
+          { path: 'jobs', element: <CandidateJobsPage /> },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/employer',
+    element: <RequireAuth allowedRoles={['employer']} />,
+    children: [
+      {
+        element: <EmployerLayout />,
+        children: [
+          { index: true, element: <Navigate to="dashboard" replace /> },
+          { path: 'dashboard', element: <EmployerDashboardPage /> },
+          { path: 'company', element: <EmployerCompanyPage /> },
+          { path: 'jobs', element: <EmployerJobsPage /> },
+          { path: 'jobs/new', element: <EmployerJobNewPage /> },
+          { path: 'jobs/:id', element: <EmployerJobDetailPage /> },
+          { path: 'jobs/:id/edit', element: <EmployerJobEditPage /> },
+        ],
       },
     ],
   },

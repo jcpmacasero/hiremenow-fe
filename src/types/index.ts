@@ -146,3 +146,8 @@ export interface DashboardStats {
   active_jobs: number;
   candidates_by_stage: Record<string, number>;
 }
+
+export interface UploadResponse {
+  url: string;
+  message: string;
+}

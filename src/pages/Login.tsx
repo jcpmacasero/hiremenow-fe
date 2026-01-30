@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth';
+
+function getDefaultRoute(role: string): string {
+  if (role === 'candidate') return '/candidate/dashboard';
+  if (role === 'employer') return '/employer/dashboard';
+  return '/admin';
+}
 import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -16,7 +22,8 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      navigate('/admin');
+      const user = useAuthStore.getState().user;
+      navigate(user ? getDefaultRoute(user.role) : '/admin');
     } catch {
       // Error is handled by the store
     }

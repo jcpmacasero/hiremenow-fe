@@ -1,8 +1,14 @@
+import { PageHeader } from '@/components/admin/PageHeader';
+import { EmployersTable } from '@/components/admin/employers/EmployersTable';
+
 export default function EmployersPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Employers</h1>
-      <p className="mt-2 text-gray-600">Manage employers here.</p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Employers"
+        description="Manage employer accounts and company associations"
+      />
+      <EmployersTable />
     </div>
   );
 }

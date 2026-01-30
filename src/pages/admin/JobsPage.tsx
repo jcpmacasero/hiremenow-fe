@@ -1,8 +1,14 @@
+import { PageHeader } from '@/components/admin/PageHeader';
+import { JobsTable } from '@/components/admin/jobs/JobsTable';
+
 export default function JobsPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Jobs</h1>
-      <p className="mt-2 text-gray-600">Manage jobs here.</p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Jobs"
+        description="Manage job listings and approve pending positions"
+      />
+      <JobsTable />
     </div>
   );
 }

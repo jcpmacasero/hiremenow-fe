@@ -1,8 +1,14 @@
+import { PageHeader } from '@/components/admin/PageHeader';
+import { CandidatesTable } from '@/components/admin/candidates/CandidatesTable';
+
 export default function CandidatesPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Candidates</h1>
-      <p className="mt-2 text-gray-600">Manage candidates here.</p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Candidates"
+        description="Manage candidate pipeline and track progress through stages"
+      />
+      <CandidatesTable />
     </div>
   );
 }
